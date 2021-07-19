@@ -68,7 +68,7 @@ let loginInfo: LoginInfo;
         case "har":
             const har = args.harfile ?? readlineSync.question("Where is the HAR file you want to use? ")
     
-            loginInfo = await login.har(args.harfile!)
+            loginInfo = await login.har(har)
         break
     }
 })();
