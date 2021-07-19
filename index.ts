@@ -47,11 +47,13 @@ let args = getArgs([
     harfile?: string
 }
 
+let loginInfo;
+
 switch (args.login) {
     case "minetron":
         const token = args.minetrontoken ?? readlineSync.question("What is your minetron token? ")
         
-        login.minetron(token)
+        loginInfo = login.minetron(token)
     break
     case "usernamepassword":
         const username = args.username ?? readlineSync.question("What is your minehut username? ")
@@ -59,11 +61,11 @@ switch (args.login) {
             hideEchoBack: true
         })
 
-        login.usernamePassword(username, password)
+        loginInfo = login.usernamePassword(username, password)
     break
     case "har":
         const har = args.harfile ?? readlineSync.question("Where is the HAR file you want to use? ")
 
-        login.har(args.harfile!)
+        loginInfo = login.har(args.harfile!)
     break
 }
