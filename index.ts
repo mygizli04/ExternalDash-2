@@ -1,6 +1,7 @@
 import getArgs from "./src/args";
 import * as login from './src/login'
 import readlineSync from 'readline-sync'
+import {LoginInfo} from 'minehut-ts'
 
 let args = getArgs([
     {
@@ -47,25 +48,27 @@ let args = getArgs([
     harfile?: string
 }
 
-let loginInfo;
+let loginInfo: LoginInfo;
 
-switch (args.login) {
-    case "minetron":
-        const token = args.minetrontoken ?? readlineSync.question("What is your minetron token? ")
-        
-        loginInfo = login.minetron(token)
-    break
-    case "usernamepassword":
-        const username = args.username ?? readlineSync.question("What is your minehut username? ")
-        const password = args.password ?? readlineSync.question("What is your password? ", {
-            hideEchoBack: true
-        })
-
-        loginInfo = login.usernamePassword(username, password)
-    break
-    case "har":
-        const har = args.harfile ?? readlineSync.question("Where is the HAR file you want to use? ")
-
-        loginInfo = login.har(args.harfile!)
-    break
-}
+(async () => {
+    switch (args.login) {
+        case "minetron":
+            const token = args.minetrontoken ?? readlineSync.question("What is your minetron token? ")
+            
+            loginInfo = await login.minetron(token)
+        break
+        case "usernamepassword":
+            const username = args.username ?? readlineSync.question("What is your minehut username? ")
+            const password = args.password ?? readlineSync.question("What is your password? ", {
+                hideEchoBack: true
+            })
+    
+            loginInfo = await login.usernamePassword(username, password)
+        break
+        case "har":
+            const har = args.harfile ?? readlineSync.question("Where is the HAR file you want to use? ")
+    
+            loginInfo = await login.har(args.harfile!)
+        break
+    }
+})();
