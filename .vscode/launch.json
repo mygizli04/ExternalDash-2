@@ -16,7 +16,8 @@
                 "${workspaceFolder}/**/*.js"
             ],
             "preLaunchTask": "tsc: watch - tsconfig.json",
-            "args": ["login=minehut"]
+            "args": [],
+            "console": "integratedTerminal"
         }
     ]
 }
