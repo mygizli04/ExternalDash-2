@@ -1,5 +1,5 @@
 interface Args {
-    login?: "minehut" | "usernamepassword" | "har"
+    login?: "minetron" | "usernamepassword" | "har"
 }
 
 import argParser from "args-parser"
@@ -31,8 +31,8 @@ function xor(...things: any[]) {
 
 function login(type: string) {
     type = type.toLowerCase()
-    if (xor(type === "minehut", type === "usernamepassword", type === "har")) {
-        // @ts-expect-error
+    if (xor(type === "minetron", type === "usernamepassword", type === "har")) {
+        // @ts-expect-error | The xor function verifies the type so it's ok.
         exportArgs.login = type
     }
     else {
@@ -57,6 +57,10 @@ if (args.login) {
     else {
         login(args.login)
     }
+}
+
+if (!args.login || !args.l) {
+    exportArgs.login = "minetron"
 }
 
 export default exportArgs
