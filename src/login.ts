@@ -1,4 +1,6 @@
-import minehut from 'minehut-ts'
+// Handle logging into minehut
+
+import * as minehut from 'minehut-ts'
 import fs from 'fs'
 let puppeteer: typeof import('puppeteer') // Imported on-demand
 

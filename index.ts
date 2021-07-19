@@ -1,7 +1,10 @@
+// Main file (wow)
+
 import getArgs from "./src/args";
 import * as login from './src/login'
 import readlineSync from 'readline-sync'
 import {LoginInfo} from 'minehut-ts'
+import * as server from './src/server'
 
 let args = getArgs([
     {
@@ -39,13 +42,27 @@ let args = getArgs([
         requiredValues: {
             login: "har"
         }
+    },
+    {
+        name: "server",
+        aliases: ["s"]
+    },
+    {
+        name: "start",
+        aliases: [],
+        bool: true,
+        requiredValues: {
+            server: null
+        }
     }
 ]) as {
     login: "minetron" | "har" | "usernamepassword",
     minetrontoken?: string,
     username?: string,
     password?: string,
-    harfile?: string
+    harfile?: string,
+    server?: string,
+    start?: boolean
 }
 
 let loginInfo: LoginInfo;
@@ -70,5 +87,16 @@ let loginInfo: LoginInfo;
     
             loginInfo = await login.har(har)
         break
+    }
+
+    console.log("Login success!")
+
+    if (args.start) {
+        console.log("Starting server...")
+        server.startServer(args.server!).then(() => {
+            console.log("Successfully started server!")
+        }).catch((err) => {
+            console.log("Failed to start the server.\n\n" + err)
+        })
     }
 })();

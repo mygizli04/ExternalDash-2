@@ -108,3 +108,6 @@ out/
 
 # VSCode
 .vscode/
+
+# Minehut HAR file
+minehut.har

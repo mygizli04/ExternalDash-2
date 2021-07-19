@@ -1,3 +1,5 @@
+// Parse and check arguments.
+
 //TODO: Improve variable names
 
 interface Argument {
@@ -9,7 +11,8 @@ interface Argument {
     validationError?: string,
     requiredValues?: {
         [key: string]: string | null
-    }
+    },
+    bool?: boolean
 }
 
 export default function getArgs(args: Argument[]) {
@@ -52,7 +55,7 @@ export default function getArgs(args: Argument[]) {
     })
 
     args.forEach(arg => {
-        if (!ret[arg.name]) return;
+        if (!ret.hasOwnProperty(arg.name)) return;
         if (arg.requiredValues) {
             objectForEach(arg.requiredValues, (value, index) => {
                 if (!value && !ret[index]) {
@@ -64,6 +67,9 @@ export default function getArgs(args: Argument[]) {
                     process.exit(1)
                 }
             })
+        }
+        if (arg.bool) {
+            ret[arg.name] = true;
         }
     })
 
