@@ -3,8 +3,9 @@
 import getArgs from "./src/args";
 import * as login from './src/login'
 import readlineSync from 'readline-sync'
-import {LoginInfo} from 'minehut-ts'
+import {LoginInfo, fetchServers} from 'minehut-ts'
 import * as server from './src/server'
+import * as selection from './src/selection'
 
 let args = getArgs([
     {
@@ -50,10 +51,7 @@ let args = getArgs([
     {
         name: "start",
         aliases: [],
-        bool: true,
-        requiredValues: {
-            server: null
-        }
+        bool: true
     }
 ]) as {
     login: "minetron" | "har" | "usernamepassword",
@@ -90,6 +88,12 @@ let loginInfo: LoginInfo;
     }
 
     console.log("Login success!")
+
+    if (!args.server) {
+        let servers: string[] = [];
+        (await fetchServers()).forEach(server => servers.push(server.name))
+        args.server = await selection.makeSelection("Which server would you like to work on?", servers)
+    }
 
     if (args.start) {
         console.log("Starting server...")
