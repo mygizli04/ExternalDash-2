@@ -1,8 +1,12 @@
 {
+  "scripts": {
+    "start": "tsc -p . && node ./out/index.js"
+  },
   "dependencies": {
     "inquirer": "^8.1.2",
     "minehut-ts": "^1.9.4",
-    "readline-sync": "^1.4.10"
+    "readline-sync": "^1.4.10",
+    "typescript": "^4.3.5"
   },
   "devDependencies": {
     "@types/inquirer": "^7.3.3",

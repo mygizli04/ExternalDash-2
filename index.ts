@@ -33,7 +33,7 @@ let args = getArgs([
     },
     {
         name: "password",
-        aliases: ["p", "password"],
+        aliases: ["p", "pass"],
         requiredValues: {
             login: "usernamepassword"
         }
