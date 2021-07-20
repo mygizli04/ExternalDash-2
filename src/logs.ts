@@ -6,7 +6,10 @@ export function getLogs(server: string) {
     let event = new EventEmitter()
     let logLength = 0
 
+    let executing = false
     setInterval(async () => {
+        if (executing) return;
+        executing = true
         let log = ""
         
         try {
@@ -26,7 +29,14 @@ export function getLogs(server: string) {
         }
 
         logLength = log.length
+        executing = false
     }, 150)
 
     return event
+}
+
+export async function sendCommand(server: string, command: string) {
+    return new Promise(async (resolve, reject) => {
+        resolve(await (await minehut.fetchServer(server)).sendServerCommand(command.trim()))
+    });
 }

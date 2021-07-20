@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "inquirer": "^8.1.2",
-    "minehut-ts": "^1.7.0",
+    "minehut-ts": "^1.9.4",
     "readline-sync": "^1.4.10"
   },
   "devDependencies": {

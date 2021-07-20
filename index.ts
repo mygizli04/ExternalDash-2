@@ -60,8 +60,8 @@ let args = getArgs([
         bool: true
     },
     {
-        name: "log",
-        aliases: [],
+        name: "console",
+        aliases: ["log"],
         bool: true
     }
 ]) as {
@@ -86,9 +86,9 @@ const commands: {
         description: "Start server"
     },
     {
-        name: "log",
+        name: "console",
         function: watchLogs,
-        description: "See server logs"
+        description: "See console"
     }
 ]
 
@@ -156,5 +156,9 @@ function watchLogs() {
     let log = logs.getLogs(args.server!)
     log.on("log", (log: string) => {
         process.stdout.write(log)
+    })
+    process.stdin.resume()
+    process.stdin.on("data", (data) => {
+        logs.sendCommand(args.server!, data.toString().trim())
     })
 }
