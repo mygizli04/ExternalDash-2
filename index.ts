@@ -6,6 +6,7 @@ import readlineSync from 'readline-sync'
 import {LoginInfo, fetchServers} from 'minehut-ts'
 import * as server from './src/server'
 import * as selection from './src/selection'
+import * as logs from './src/logs'
 
 let args = getArgs([
     {
@@ -57,6 +58,11 @@ let args = getArgs([
         name: "menu",
         aliases: ["m"],
         bool: true
+    },
+    {
+        name: "log",
+        aliases: [],
+        bool: true
     }
 ]) as {
     login: "minetron" | "har" | "usernamepassword",
@@ -75,9 +81,14 @@ const commands: {
     function: Function
 }[] = [
     {
-    name: "start",
-    function: startServer,
-    description: "Start server"
+        name: "start",
+        function: startServer,
+        description: "Start server"
+    },
+    {
+        name: "log",
+        function: watchLogs,
+        description: "See server logs"
     }
 ]
 
@@ -138,5 +149,12 @@ function startServer() {
         console.log("Successfully started server!")
     }).catch((err) => {
         console.log("Failed to start the server.\n\n" + err)
+    })
+}
+
+function watchLogs() {
+    let log = logs.getLogs(args.server!)
+    log.on("log", (log: string) => {
+        process.stdout.write(log)
     })
 }
