@@ -73,11 +73,13 @@ const commands: {
     name: string,
     description: string,
     function: Function
-}[] = [{
+}[] = [
+    {
     name: "start",
     function: startServer,
     description: "Start server"
-}]
+    }
+]
 
 let loginInfo: LoginInfo;
 
