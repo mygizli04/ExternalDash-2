@@ -52,6 +52,11 @@ let args = getArgs([
         name: "start",
         aliases: [],
         bool: true
+    },
+    {
+        name: "menu",
+        aliases: ["m"],
+        bool: true
     }
 ]) as {
     login: "minetron" | "har" | "usernamepassword",
@@ -60,8 +65,19 @@ let args = getArgs([
     password?: string,
     harfile?: string,
     server?: string,
-    start?: boolean
+    start?: boolean,
+    menu?: boolean
 }
+
+const commands: {
+    name: string,
+    description: string,
+    function: Function
+}[] = [{
+    name: "start",
+    function: startServer,
+    description: "Start server"
+}]
 
 let loginInfo: LoginInfo;
 
@@ -95,12 +111,30 @@ let loginInfo: LoginInfo;
         args.server = await selection.makeSelection("Which server would you like to work on?", servers)
     }
 
-    if (args.start) {
-        console.log("Starting server...")
-        server.startServer(args.server!).then(() => {
-            console.log("Successfully started server!")
-        }).catch((err) => {
-            console.log("Failed to start the server.\n\n" + err)
+    let action = false
+    commands.forEach((value) => {
+        // @ts-expect-error | Honestly i have no clue how to fix this without sacrificing any sort of typing
+        if (args[value.name]) {
+            action = true
+            value.function()
+        }
+    })
+
+    if (!action || args.menu) {
+        let answer = await selection.makeSelection("Welcome! What would you like to do?", commands.map(value => value.description))
+        commands.forEach(command => {
+            if (command.description === answer) {
+                command.function()
+            }
         })
     }
 })();
+
+function startServer() {
+    console.log("Starting server...")
+    server.startServer(args.server!).then(() => {
+        console.log("Successfully started server!")
+    }).catch((err) => {
+        console.log("Failed to start the server.\n\n" + err)
+    })
+}
