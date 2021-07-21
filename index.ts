@@ -1,12 +1,16 @@
 // Main file (wow)
 
+import readlineSync from 'readline-sync'
+import chalk from 'chalk'
+
+import {LoginInfo, fetchServers} from 'minehut-ts'
+
 import getArgs from "./src/args";
 import * as login from './src/login'
-import readlineSync from 'readline-sync'
-import {LoginInfo, fetchServers} from 'minehut-ts'
 import * as server from './src/server'
 import * as selection from './src/selection'
 import * as logs from './src/logs'
+import * as skriptServer from './src/skript/server'
 
 let args = getArgs([
     {
@@ -63,6 +67,11 @@ let args = getArgs([
         name: "console",
         aliases: ["log"],
         bool: true
+    },
+    {
+        name: "skript",
+        aliases: [],
+        values: ["upload", "delete", "disable", "sync", "watch", "enable", "list"]
     }
 ]) as {
     login: "minetron" | "har" | "usernamepassword",
@@ -72,7 +81,8 @@ let args = getArgs([
     harfile?: string,
     server?: string,
     start?: boolean,
-    menu?: boolean
+    menu?: boolean,
+    skript?: "upload" | "delete" | "enable" | "disable" | "sync" | "watch" | "list"
 }
 
 const commands: {
@@ -89,6 +99,11 @@ const commands: {
         name: "console",
         function: watchLogs,
         description: "See console"
+    },
+    {
+        name: "skript",
+        function: skript,
+        description: "Manage Skripts"
     }
 ]
 
@@ -161,4 +176,26 @@ function watchLogs() {
     process.stdin.on("data", (data) => {
         logs.sendCommand(args.server!, data.toString().trim())
     })
+}
+
+function skript() {
+    switch (args.skript) {
+        case "list":
+            skriptServer.listSkripts(args.server!).then(skripts => {
+                skripts.forEach(skript => {
+                    let status: string
+                    if (skript.disabled) {
+                        status = chalk.red("disabled")
+                    }
+                    else {
+                        status = chalk.green("Active")
+                    }
+                    console.log(skript.name + " - " + status)
+                })
+            })
+        break
+        case "delete":
+            skriptServer.askDeleteSkript(args.server!)
+        break
+    }
 }

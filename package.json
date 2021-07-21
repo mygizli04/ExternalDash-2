@@ -3,6 +3,7 @@
     "start": "tsc -p . && node ./out/index.js"
   },
   "dependencies": {
+    "chalk": "^4.1.1",
     "inquirer": "^8.1.2",
     "minehut-ts": "^1.9.4",
     "readline-sync": "^1.4.10",
