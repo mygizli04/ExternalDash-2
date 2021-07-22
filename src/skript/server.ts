@@ -5,13 +5,15 @@ class Skript {
     name: string
     disabled: boolean
     server: minehut.Server
+    file: minehut.FileInfo
     delete() {
         deleteSkript(this)
     }
 
     constructor(options: {
         name: string,
-        server: minehut.Server
+        server: minehut.Server,
+        file: minehut.FileInfo
     }) {
         if (options.name.startsWith("-")) {
             this.name = options.name.substring(1)
@@ -23,6 +25,7 @@ class Skript {
         }
         this.name = this.name.replace(".sk", "")
         this.server = options.server
+        this.file = options.file
     }
 }
 
@@ -33,7 +36,7 @@ export async function listSkripts(server: string): Promise<Skript[]> {
         await serverObj.start()
     }
     return new Promise(async (resolve, reject) => {
-        resolve((await minehut.listDir(serverObj, "/plugins/Skript/scripts")).map(value => new Skript({name: value.name, server: value.server})).filter(skript => skript.name !== "- Files prefixed with a hyphen are disabled! --"))
+        resolve((await minehut.listDir(serverObj, "/plugins/Skript/scripts")).map(value => new Skript({name: value.name, server: value.server, file: value})).filter(skript => skript.name !== "- Files prefixed with a hyphen are disabled! --"))
     });
 }
 
@@ -43,6 +46,8 @@ export async function askDeleteSkript(server: string) {
     deleteSkript(skripts.filter(skriptz => skriptz.name === choice)[0])
 }
 
-async function deleteSkript(skript: Skript) {
-    debugger
+export async function deleteSkript(skript: Skript): Promise<void> {
+    return new Promise((resolve, reject) => {
+        skript.file.delete().then(() => resolve())
+    });
 }
