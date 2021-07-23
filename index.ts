@@ -200,5 +200,8 @@ function skript() {
         case "disable":
             skriptServer.askDisableSkript(args.server!)
         break
+        case "enable":
+            skriptServer.askEnableSkript(args.server!)
+        break
     }
 }

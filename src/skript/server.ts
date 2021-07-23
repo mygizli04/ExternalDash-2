@@ -62,10 +62,36 @@ export async function askDisableSkript(server: string): Promise<void> {
     disableSkript(skripts.filter(skript => skript.name === choice)[0])
 }
 
+async function rename(file: minehut.FileInfo, newpath: string): Promise<minehut.FileInfo> {
+    let contents = await file.fetch() as string
+    await file.delete()
+    return Promise.resolve(await file.server.createFile(newpath, contents))
+}
+
 export async function disableSkript(skript: Skript) {
-    let contents = await skript.file.fetch() as string
-    await skript.file.delete()
-    let path = skript.file.path.split("/")
-    path.push("-" + path.splice(path.length - 1, 1)[0])
-    await skript.file.server.createFile(path.join("/"), contents)
+    if (skript.server.online) {
+        skript.server.sendServerCommand("skript disable " + skript.name + ".sk")
+        return Promise.resolve()
+    }
+    await rename(skript.file, skript.file.path + "/-" + skript.file.name)
+    return Promise.resolve()
+}
+
+export async function askEnableSkript(server: string) {
+    let skripts = (await listSkripts(server)).filter(skript => skript.disabled)
+    if (skripts.length === 0) {
+        console.error("You have no skripts to enable!")
+        process.exit(1)
+    }
+    let choice = await selection.makeSelection("Which Skript would you like to enable?", skripts.map(skript => skript.name))
+    enableSkript(skripts.filter(skript => skript.name === choice)[0])
+}
+
+export async function enableSkript(skript: Skript): Promise<void> {
+    if (skript.server.online) {
+        skript.server.sendServerCommand("skript enable " + skript.name + ".sk")
+        return Promise.resolve()
+    }
+    await rename(skript.file, skript.file.path + "/" + skript.file.name.substring(1))
+    return Promise.resolve()
 }
