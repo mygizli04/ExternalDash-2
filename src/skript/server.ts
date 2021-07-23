@@ -51,3 +51,21 @@ export async function deleteSkript(skript: Skript): Promise<void> {
         skript.file.delete().then(() => resolve())
     });
 }
+
+export async function askDisableSkript(server: string): Promise<void> {
+    let skripts = (await listSkripts(server)).filter(skript => !skript.disabled)
+    if (skripts.length === 0) {
+        console.error("You have no skripts to disable!")
+        process.exit(1)
+    }
+    let choice = await selection.makeSelection("Which Skript would you like to disable?", skripts.map(skript => skript.name))
+    disableSkript(skripts.filter(skript => skript.name === choice)[0])
+}
+
+export async function disableSkript(skript: Skript) {
+    let contents = await skript.file.fetch() as string
+    await skript.file.delete()
+    let path = skript.file.path.split("/")
+    path.push("-" + path.splice(path.length - 1, 1)[0])
+    await skript.file.server.createFile(path.join("/"), contents)
+}

@@ -197,5 +197,8 @@ function skript() {
         case "delete":
             skriptServer.askDeleteSkript(args.server!)
         break
+        case "disable":
+            skriptServer.askDisableSkript(args.server!)
+        break
     }
 }
